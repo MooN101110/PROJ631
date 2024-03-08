@@ -1,5 +1,6 @@
 import csv
 import math as m
+import operator
 
 #_________________Récupération et organisation des données_________________________________________________________________________#
 
@@ -100,12 +101,23 @@ def gain(data,liste_attributs,attribut,attribut_classe="class"):
     return(I(p,n)-E(data,attribut,liste_attributs,attribut_classe))
 
 def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
-    res=""
+    """Calcul le gain d'information de tous les attributs
+
+    Args:
+        data (liste de dictionnaire): ensemble des données
+        liste_attribut (dictionnaire): tous les attributs et leurs différentes valeurs
+        attribut_classe (string): nom de l'attribut contenant l'information
+    """
+    affichage=""
+    res=[]
     keys=list(attributs.keys())
     for key in (keys):
         if key!=attribut_classe:
-            res+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
-    return res
+            res.append([key,round(gain(data,liste_attributs,key,attribut_classe),3)])
+            liste_tri=sorted(res, key=operator.itemgetter(1))
+            affichage+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
+    print (affichage)
+    return liste_tri
 
 #_________________________Zone de test_________________________#
 print(gain_tous_attributs(donnees,attributs,"play"))
