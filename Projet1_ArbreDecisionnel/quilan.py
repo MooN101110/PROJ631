@@ -25,6 +25,12 @@ with open("golf.csv","r") as f:
 #_______________ID3______________________________________________________________________________#
 
 def calcul_PN(data,attribut_classe="class"):
+    """calcul le nombre de P(vrai) et N(faux) sur l'ensemble des données
+    
+    Args:
+        data (liste de dictionnaire): ensemble des données
+        attribut_classe (string): nom de l'attribut contenant l'information
+    """
     p=0
     n=0
     for elt in data:
@@ -35,6 +41,14 @@ def calcul_PN(data,attribut_classe="class"):
     return(p,n)
 
 def calcul_PiNi(data,attribut,valeur,attribut_classe="class"):
+    """calcul le nombre de P_i(vrai) et N_i(faux) sur l'ensemble des données ayant une certaine valeur
+    
+    Args:
+        data (liste de dictionnaire): ensemble des données
+        attribut (string): attribut dans lequel la valeur se trouve
+        valeur (string) : on calcule les P/N sur les données ayant cette valeur
+        attribut_classe (string): nom de l'attribut contenant l'information
+    """
     p_i=0
     n_i=0
     for elt in data:
@@ -63,6 +77,7 @@ def E(data,attribut,liste_attributs,attribut_classe="class"):
     Args:
         data (lsite): donnees du problemes
         attribut (string): attribut sur lequel on fait le calcul
+        attribut_classe (string): nom de l'attribut contenant l'information
     """
     somme=0
     liste_donnees=liste_attributs[attribut]
@@ -76,12 +91,21 @@ def gain(data,liste_attributs,attribut,attribut_classe="class"):
     """Calcul le gain d'information de l'attribut mis en parametre
 
     Args:
-        data (_type_): _description_
-        liste_attribut (_type_): _description_
-        attribut (_type_): _description_
+        data (liste de dictionnaire): ensemble des données
+        liste_attribut (dictionnaire): tous les attributs et leurs différentes valeurs
+        attribut (string): calcul du gain de cette attribut
+        attribut_classe (string): nom de l'attribut contenant l'information
     """
     p,n=calcul_PN(data,attribut_classe)
     return(I(p,n)-E(data,attribut,liste_attributs,attribut_classe))
 
+def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
+    res=""
+    keys=list(attributs.keys())
+    for key in (keys):
+        if key!=attribut_classe:
+            res+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
+    return res
+
 #_________________________Zone de test_________________________#
-print(gain(donnees,attributs,"outlook","play"))
+print(gain_tous_attributs(donnees,attributs,"play"))
