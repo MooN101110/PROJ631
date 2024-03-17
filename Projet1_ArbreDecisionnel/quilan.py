@@ -1,5 +1,6 @@
 import csv
 import math as m
+import operator
 
 #_________________Récupération et organisation des données_________________________________________________________________________#
 
@@ -100,12 +101,23 @@ def gain(data,liste_attributs,attribut,attribut_classe="class"):
     return(I(p,n)-E(data,attribut,liste_attributs,attribut_classe))
 
 def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
-    res=""
+    """Retourne une liste triée par gain croissant et affiche les gains
+
+    Returns:
+        liste: liste triée des gains par ordre croissant
+    """
+    affichage=""
+    res=[]
     keys=list(attributs.keys())
     for key in (keys):
         if key!=attribut_classe:
-            res+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
-    return res
+            affichage+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
+            res.append([key,round(gain(data,liste_attributs,key,attribut_classe),3)])
+    print (affichage)
+    return (sorted(res, key=operator.itemgetter(1)))
+
+#_________________________Construction de l'arbre_________________________#
+
 
 #_________________________Zone de test_________________________#
 print(gain_tous_attributs(donnees,attributs,"play"))
