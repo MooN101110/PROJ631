@@ -115,11 +115,30 @@ def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
         if key!=attribut_classe:
             affichage+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
             res.append([key,round(gain(data,liste_attributs,key,attribut_classe),3)])
-    print (affichage)
+    #print (affichage)
     return (sorted(res, key=operator.itemgetter(1)))
 
 #_________________________Construction de l'arbre_________________________#
+##Pas besoin je pense
+# class Node:
+#     def __init__(self, caracteristique=None):
+#         self.caracteristique = caracteristique   # Caractéristique utilisée pour diviser les données
+#         self.children = {}    # Dictionnaire des enfants (valeur de la caractéristique : noeud fils)
+        
+#     def is_leaf(self):
+#         return self.children == {}
+    
+class ArbreDescision:
+    def __init__(self,root,data,attributs):
+        self.root = root  # Racine de l'abre cad l'attribut avec le meilleur gain
+        self.data = data  # Ensemble des données (tableau de dictionnaires)
+        self.attributs = attributs #Tableau de attributs et de leur valeur
 
+    def is_leaf(self):
+        pass
+    
+    def create_tree(self):
+        pass
 
 #_________________________Zone de test_________________________#
-print(gain_tous_attributs(donnees,attributs,"play"))
+#print(gain_tous_attributs(donnees,attributs,"play"))
