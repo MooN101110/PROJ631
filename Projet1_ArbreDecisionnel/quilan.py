@@ -113,11 +113,13 @@ def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
     keys=list(attributs.keys())
     for key in (keys):
         if key!=attribut_classe:
-            res.append([key,round(gain(data,liste_attributs,key,attribut_classe),3)])
-            liste_tri=sorted(res, key=operator.itemgetter(1))
             affichage+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
+            res.append([key,round(gain(data,liste_attributs,key,attribut_classe),3)])
     print (affichage)
-    return liste_tri
+    return (sorted(res, key=operator.itemgetter(1)))
+
+#_________________________Construction de l'arbre_________________________#
+
 
 #_________________________Zone de test_________________________#
 print(gain_tous_attributs(donnees,attributs,"play"))
