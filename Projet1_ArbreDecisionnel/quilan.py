@@ -23,7 +23,7 @@ with open("golf.csv","r") as f:
                 formatage_donne[attr] = row[j]
             donnees.append(formatage_donne)
             
-def donnees_sous_arbre(data,attributs_parent):
+def donnees_sous_arbre(data,attributs_parent):  #Pourrait surement être amélioré (récursive)
     """retourne la liste des données des sous arbres
 
     Args:
@@ -33,9 +33,7 @@ def donnees_sous_arbre(data,attributs_parent):
     dataSA=[]
     cles_attr=attributs_parent.keys()
     for elt in cles_attr:
-        print(elt)
         for dict in data :
-            print(dict)
             if dict[elt]==attributs_parent[elt]:
                 dataSA.append(dict)
         data=dataSA
@@ -139,27 +137,43 @@ def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
 
 #_________________________Construction de l'arbre_________________________#
 ##Pas besoin je pense
-# class Node:
-#     def __init__(self, caracteristique=None):
-#         self.caracteristique = caracteristique   # Caractéristique utilisée pour diviser les données
-#         self.children = {}    # Dictionnaire des enfants (valeur de la caractéristique : noeud fils)
+class Node:
+    def __init__(self, caracteristique=None, children={}):
+        self.caracteristique = caracteristique   # Caractéristique utilisée pour diviser les données
+        self.children = children    # Dictionnaire des enfants (valeur de la caractéristique : noeud fils)
         
-#     def is_leaf(self):
-#         return self.children == {}
+    def isleaf(self):
+        return self.children == {}
     
 class ArbreDescision:
-    def __init__(self,root,data,attributs):
+    def __init__(self,root=None):
         self.root = root  # Racine de l'abre cad l'attribut avec le meilleur gain
-        #self.data = data  # Ensemble des données (tableau de dictionnaires)
-        self.attributs = attributs #Tableau de attributs et de leur valeur
 
-    def is_leaf(self):
-        pass
-    
-    def create_tree(self,data, attributs_parent):
-        pass
+        #self.children = children #Dictionnaire des enfants (valeur de la caractéristique : noeud fils)
+
+    def create_tree(self,data,liste_tous_attr, attributs_parent={},attribut_classe="class",i=0):
+        """Création de l'abre à l'aide de la récusrive
+        
+        data(tableau de dictionnaire) = liste des cas qui correspondent
+        liste_tous_attr (dictionnaire de liste) = nom_attribut : liste_valeur
+        attributs_parents (dictionnaire) = attributs déjà présents dans la branche
+        attribut_classe (string) = nom colonne de déciscion
+        """
+        best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
+        self.root = Node(best_attr)
+        if i>10:
+            return(self.root.caracteristique)
+        else:
+            for valeur in liste_tous_attr[best_attr]:
+                attributs_parent[best_attr]=valeur
+                print(self.root.caracteristique)
+                i+=1
+                self.root.children[valeur] = self.create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe,i)
+            
 
 #_________________________Zone de test_________________________#
 #print(gain_tous_attributs(donnees,attributs,"play"))
-attributs_parent={'outlook':'sunny', 'temp':'hot'}
-print(donnees_sous_arbre(donnees,attributs_parent))
+#attributs_parent={}
+#print(donnees_sous_arbre(donnees,attributs_parent))
+arbre = ArbreDescision()
+print(arbre.create_tree(donnees,attributs,{},"play"))
