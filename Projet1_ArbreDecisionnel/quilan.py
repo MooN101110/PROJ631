@@ -22,6 +22,25 @@ with open("golf.csv","r") as f:
             for j,attr in enumerate (attributs):
                 formatage_donne[attr] = row[j]
             donnees.append(formatage_donne)
+            
+def donnees_sous_arbre(data,attributs_parent):
+    """retourne la liste des données des sous arbres
+
+    Args:
+        data (liste): liste de dictionnaire
+        attributs_parent (dictionnaire): nom_attribut : valeur
+    """
+    dataSA=[]
+    cles_attr=attributs_parent.keys()
+    for elt in cles_attr:
+        print(elt)
+        for dict in data :
+            print(dict)
+            if dict[elt]==attributs_parent[elt]:
+                dataSA.append(dict)
+        data=dataSA
+        dataSA=[]
+    return(data)
 
 #_______________ID3______________________________________________________________________________#
 
@@ -131,14 +150,16 @@ def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
 class ArbreDescision:
     def __init__(self,root,data,attributs):
         self.root = root  # Racine de l'abre cad l'attribut avec le meilleur gain
-        self.data = data  # Ensemble des données (tableau de dictionnaires)
+        #self.data = data  # Ensemble des données (tableau de dictionnaires)
         self.attributs = attributs #Tableau de attributs et de leur valeur
 
     def is_leaf(self):
         pass
     
-    def create_tree(self):
+    def create_tree(self,data, attributs_parent):
         pass
 
 #_________________________Zone de test_________________________#
 #print(gain_tous_attributs(donnees,attributs,"play"))
+attributs_parent={'outlook':'sunny', 'temp':'hot'}
+print(donnees_sous_arbre(donnees,attributs_parent))
