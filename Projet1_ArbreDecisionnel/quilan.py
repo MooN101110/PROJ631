@@ -172,8 +172,8 @@ class ArbreDescision:
             
 
 #_________________________Zone de test_________________________#
-#print(gain_tous_attributs(donnees,attributs,"play"))
+print(gain_tous_attributs(donnees,attributs,"play"))
 #attributs_parent={}
 #print(donnees_sous_arbre(donnees,attributs_parent))
 arbre = ArbreDescision()
-print(arbre.create_tree(donnees,attributs,{},"play"))
+#print(arbre.create_tree(donnees,attributs,{},"play"))
