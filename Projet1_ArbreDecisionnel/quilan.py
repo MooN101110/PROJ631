@@ -1,6 +1,10 @@
 import csv
 import math as m
 import operator
+import os
+
+#Bouger dans le bon repertoire
+os.chdir('PROJ631\Projet1_ArbreDecisionnel')
 
 #_________________Récupération et organisation des données_________________________________________________________________________#
 
@@ -184,9 +188,9 @@ class ArbreDescision:
 
 #_________________________Zone de test_________________________#
 #print(gain_tous_attributs(donnees,attributs,"play"))
-#attributs_parent={'outlook':'sunny','temp':'hot'}
-#print(donnees_sous_arbre(donnees,attributs_parent))
-#print(est_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
+attributs_parent={'outlook':'sunny','humidity':'high'}
+print(donnees_sous_arbre(donnees,attributs_parent))
+print(est_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
 arbre = ArbreDescision()
 print(arbre.create_tree(donnees,attributs,{},"play"))
 arbre.affiche_arbre()
