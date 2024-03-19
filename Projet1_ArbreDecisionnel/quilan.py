@@ -40,6 +40,14 @@ def donnees_sous_arbre(data,attributs_parent):  #Pourrait surement être amélio
         dataSA=[]
     return(data)
 
+def est_unique(data,attributs_parents,attribut_classe="class"):
+    """retourne si tous les attributs classes des données ont la même valeur
+    """
+    for i in range (1,len(data)):
+        if data[i][attribut_classe]!=data[i-1][attribut_classe]:
+            return False
+    return True
+
 #_______________ID3______________________________________________________________________________#
 
 def calcul_PN(data,attribut_classe="class"):
@@ -161,19 +169,24 @@ class ArbreDescision:
         """
         best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
         self.root = Node(best_attr)
-        if i>10:
+        if est_unique(data,attributs_parent,attribut_classe):
             return(self.root.caracteristique)
         else:
             for valeur in liste_tous_attr[best_attr]:
                 attributs_parent[best_attr]=valeur
-                print(self.root.caracteristique)
+                #print(self.root.caracteristique)
                 i+=1
                 self.root.children[valeur] = self.create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe,i)
-            
+    
+    def affiche_arbre(self):
+        print("azer",self.root.caracteristique)
+       
 
 #_________________________Zone de test_________________________#
-print(gain_tous_attributs(donnees,attributs,"play"))
-#attributs_parent={}
+#print(gain_tous_attributs(donnees,attributs,"play"))
+#attributs_parent={'outlook':'sunny','temp':'hot'}
 #print(donnees_sous_arbre(donnees,attributs_parent))
+#print(est_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
 arbre = ArbreDescision()
-#print(arbre.create_tree(donnees,attributs,{},"play"))
+print(arbre.create_tree(donnees,attributs,{},"play"))
+arbre.affiche_arbre()
