@@ -4,7 +4,7 @@ import operator
 import os
 
 #Bouger dans le bon repertoire
-os.chdir('PROJ631\Projet1_ArbreDecisionnel')
+os.chdir('Projet1_ArbreDecisionnel')
 
 #_________________Récupération et organisation des données_________________________________________________________________________#
 
@@ -51,6 +51,12 @@ def est_unique(data,attributs_parents,attribut_classe="class"):
         if data[i][attribut_classe]!=data[i-1][attribut_classe]:
             return False
     return True
+
+def retourne_unique(data,attributs_parents,attribut_classe="class"):
+    """retourne l'attribut de décision unique (vrai/faux par exemple)
+    """
+    if est_unique(data,attributs_parents,attribut_classe):
+        return data[0][attribut_classe]
 
 #_______________ID3______________________________________________________________________________#
 
@@ -158,10 +164,9 @@ class Node:
         return self.children == {}
     
 class ArbreDescision:
-    def __init__(self,root=None):
+    def __init__(self,root=None,children={}):
         self.root = root  # Racine de l'abre cad l'attribut avec le meilleur gain
-
-        #self.children = children #Dictionnaire des enfants (valeur de la caractéristique : noeud fils)
+        self.children = children #Dictionnaire des enfants (valeur de la caractéristique : noeud fils)
 
     def create_tree(self,data,liste_tous_attr, attributs_parent={},attribut_classe="class",i=0):
         """Création de l'abre à l'aide de la récusrive
@@ -172,15 +177,15 @@ class ArbreDescision:
         attribut_classe (string) = nom colonne de déciscion
         """
         best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
-        self.root = Node(best_attr)
-        if est_unique(data,attributs_parent,attribut_classe):
-            return(self.root.caracteristique)
-        else:
-            for valeur in liste_tous_attr[best_attr]:
-                attributs_parent[best_attr]=valeur
-                #print(self.root.caracteristique)
-                i+=1
-                self.root.children[valeur] = self.create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe,i)
+        self.root = best_attr
+        for valeur in liste_tous_attr[best_attr]:
+            attributs_parent[best_attr]=valeur
+            if est_unique(data,attributs_parent,attribut_classe):
+                self.children[valeur]=est_unique(data,attributs_parent,attribut_classe)
+                return(self.children[valeur])
+            else:
+                    #print(self.root)
+                    self.children[valeur] = self.create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe,i)
     
     def affiche_arbre(self):
         print("azer",self.root.caracteristique)
@@ -189,8 +194,9 @@ class ArbreDescision:
 #_________________________Zone de test_________________________#
 #print(gain_tous_attributs(donnees,attributs,"play"))
 attributs_parent={'outlook':'sunny','humidity':'high'}
-print(donnees_sous_arbre(donnees,attributs_parent))
-print(est_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
+#print(donnees_sous_arbre(donnees,attributs_parent))
+#print(retourne_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
 arbre = ArbreDescision()
 print(arbre.create_tree(donnees,attributs,{},"play"))
-arbre.affiche_arbre()
+#arbre.affiche_arbre()
+#print(attributs)
