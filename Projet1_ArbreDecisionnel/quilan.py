@@ -168,7 +168,7 @@ class ArbreDescision:
         self.root = root  # Racine de l'abre cad l'attribut avec le meilleur gain
         self.children = children #Dictionnaire des enfants (valeur de la caractéristique : noeud fils)
 
-    def create_tree(self,data,liste_tous_attr, attributs_parent={},attribut_classe="class",i=0):
+    def create_tree(self,data,liste_tous_attr, attributs_parent={},attribut_classe="class"):
         """Création de l'abre à l'aide de la récusrive
         
         data(tableau de dictionnaire) = liste des cas qui correspondent
@@ -178,21 +178,21 @@ class ArbreDescision:
         """
         best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
         self.root = best_attr
+        print(self.root)
         for valeur in liste_tous_attr[best_attr]:
             attributs_parent[best_attr]=valeur
-            if est_unique(data,attributs_parent,attribut_classe):
-                self.children[valeur]=retourne_unique(data,attributs_parent,attribut_classe)
+            if est_unique(donnees_sous_arbre(data,attributs_parent),attributs_parent,attribut_classe):
+                self.children[valeur]=retourne_unique(donnees_sous_arbre(data,attributs_parent),attributs_parent,attribut_classe)
                 print(self.children[valeur])
-                return(self.children[valeur])
+                #return(self.children[valeur])
             
-            if len(data)<=1:
+            elif len(data)<=1:
                 self.children[valeur]=data[0][attribut_classe]
                 print(self.children[valeur])
-                return(self.children[valeur])
+                #return(self.children[valeur])
             
             else:
-                    print(self.root)
-                    self.children[valeur] = self.create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe,i)
+                    self.children[valeur] = self.create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe)
         return(self.root)
     
     def affiche_arbre(self):
@@ -201,9 +201,9 @@ class ArbreDescision:
 
 #_________________________Zone de test_________________________#
 #print(gain_tous_attributs(donnees,attributs,"play"))
-attributs_parent={'outlook': 'sunny', 'humidity': 'high', 'wind': 'false'}
-#print(donnees_sous_arbre(donnees,attributs_parent))
-print(retourne_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
+attributs_parent={'outlook': 'sunny', 'humidity': 'high'}
+print(donnees_sous_arbre(donnees,attributs_parent))
+print(est_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
 arbre = ArbreDescision()
 print(arbre.create_tree(donnees,attributs,{},"play"))
 #arbre.affiche_arbre()
