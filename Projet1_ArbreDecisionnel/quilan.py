@@ -180,20 +180,17 @@ class ArbreDescision:
         self.root = best_attr
         print(self.root)
         for valeur in liste_tous_attr[best_attr]:
+            print(valeur)
             attributs_parent[best_attr]=valeur
             if est_unique(donnees_sous_arbre(data,attributs_parent),attributs_parent,attribut_classe):
                 self.children[valeur]=retourne_unique(donnees_sous_arbre(data,attributs_parent),attributs_parent,attribut_classe)
                 print(self.children[valeur])
-                #return(self.children[valeur])
-            
-            elif len(data)<=1:
-                self.children[valeur]=data[0][attribut_classe]
-                print(self.children[valeur])
-                #return(self.children[valeur])
-            
+                #return(self.children[valeur])            
             else:
-                    self.children[valeur] = self.create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe)
-        return(self.root)
+                self.children[best_attr] = self.create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe)
+        self.root = best_attr
+        del attributs_parent[self.root]
+        return(self.children)
     
     def affiche_arbre(self):
         print("azer",self.root.caracteristique)
@@ -202,9 +199,9 @@ class ArbreDescision:
 #_________________________Zone de test_________________________#
 #print(gain_tous_attributs(donnees,attributs,"play"))
 attributs_parent={'outlook': 'sunny', 'humidity': 'high'}
-print(donnees_sous_arbre(donnees,attributs_parent))
-print(est_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
+#print(donnees_sous_arbre(donnees,attributs_parent))
+#print(est_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
 arbre = ArbreDescision()
 print(arbre.create_tree(donnees,attributs,{},"play"))
 #arbre.affiche_arbre()
-#print(attributs)
+#print(arbre.children)
