@@ -2,6 +2,7 @@ import csv
 import math as m
 import operator
 import os
+from matrice import *
 
 #Bouger dans le bon repertoire
 os.chdir('Projet1_ArbreDecisionnel')
@@ -57,6 +58,17 @@ def retourne_unique(data,attributs_parents,attribut_classe="class"):
     """
     if est_unique(data,attributs_parents,attribut_classe):
         return data[0][attribut_classe]
+    
+def identique(data,liste_tous_atr,attribut_classe="class"):
+    """regarde si toutes les données sont identiques (on ne prend pas en compte l'attribut classe)
+    """
+    for key in liste_tous_atr:
+        if key!=attribut_classe:
+            for i in range (1,len(data)):
+                if data[i][key]!=data[i-1][key]:
+                    return False
+    return True
+#_______________________________________________________________________________________#                
 
 #_______________ID3______________________________________________________________________________#
 
@@ -150,8 +162,9 @@ def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
         if key!=attribut_classe:
             affichage+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
             res.append([key,round(gain(data,liste_attributs,key,attribut_classe),3)])
-    print (affichage)
+    #print (affichage)
     return (sorted(res, key=operator.itemgetter(1)))
+#_______________________________________________________________________________________#
 
 #_________________________Construction de l'arbre_________________________#
     
@@ -179,12 +192,18 @@ class ArbreDescision:
             attributs_parent[best_attr]=valeur
             if est_unique(donnees_sous_arbre(data,attributs_parent),attributs_parent,attribut_classe):
                 self.children[valeur]=ArbreDescision(retourne_unique(donnees_sous_arbre(data,attributs_parent),attributs_parent,attribut_classe))
+                self.children[valeur].children={}
                 print(self.children[valeur].root)
                 #return(self.children[valeur])   
             
             elif len(data)==0:
                  print("rien")
                  self.children[valeur]= None
+                   
+            elif identique(donnees_sous_arbre(donnees,attributs_parent),liste_tous_attr,attribut_classe):
+                self.children[valeur]=ArbreDescision(max(donnees_sous_arbre(donnees,attributs_parent), key=donnees_sous_arbre(donnees,attributs_parent).count)[attribut_classe])
+                self.children[valeur].children={}
+                print(self.children[valeur].root)
                        
             else:
                 self.children[valeur] = ArbreDescision()
@@ -194,21 +213,47 @@ class ArbreDescision:
         del attributs_parent[self.root]
         return(self)
 
-#A faire après    
+    #A faire après    
     def affiche_arbre(self):
         if self.isleaf:
             return(self.root)
         else:
             print(self.root)
             
-       
+    def prediction_arbre(self,cas):
+        if self.isleaf():
+            return self.root
+        else:
+            res=self.children[cas[self.root]].prediction_arbre(cas)
+        return res
+            
+#_______________________________________________________________________________________#    
+
+#_________________________Calcul données matrice de confusion_________________________#
+def remplir_matrice(mat,arbre,data,liste_attr,attribut_class):
+    for elt in data:
+        if arbre.prediction_arbre(elt)==elt[attribut_class]:
+            for i in range (0,len(liste_attr[attribut_class])):
+                if liste_attr[attribut_class][i]==elt[attribut_class]:
+                    mat.mat[i][i]+=1
+        else:
+            for j in range (0,len(liste_attr[attribut_class])):
+                if liste_attr[attribut_class][j]==elt[attribut_class]:
+                    colonne=j
+                if liste_attr[attribut_class][j]==arbre.prediction_arbre(elt):
+                    ligne=j
+            mat.mat[ligne][colonne]+=1
+    return mat
+    
 
 #_________________________Zone de test_________________________#
 #print(gain_tous_attributs(donnees,attributs,"play"))
-attributs_parent={'outlook': 'sunny', 'humidity': 'high'}
-#print(donnees_sous_arbre(donnees,attributs_parent))
-#print(est_unique(donnees_sous_arbre(donnees,attributs_parent),attributs_parent,"play"))
+attributs_parents={'outlook': 'rain', 'humidity': 'normal','wind':'true'}
+#print(donnees_sous_arbre(donnees,attributs_parents))
+#print(identique(donnees_sous_arbre(donnees,attributs_parents),attributs,"play"))
 arbre = ArbreDescision()
 print(arbre.create_tree(donnees,attributs,{},"play"))
 #arbre.affiche_arbre()
-print(arbre.children['high'].children)
+mat=Matrice(attributs,"play")
+print(remplir_matrice(mat,arbre,donnees,attributs,"play").mat)
+print(mat.mat[1][0])
