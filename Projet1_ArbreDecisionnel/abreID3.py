@@ -9,6 +9,7 @@ os.chdir('Projet1_ArbreDecisionnel')
 
 #_________________Récupération et organisation des données_________________________________________________________________________#
 
+#récupération de Sapp
 attributs={}
 donnees=[]
 with open("golf.csv","r") as f:
@@ -28,6 +29,7 @@ with open("golf.csv","r") as f:
                 formatage_donne[attr] = row[j]
             donnees.append(formatage_donne)
             
+
 def donnees_sous_arbre(data,attributs_parent):  #Pourrait surement être amélioré (récursive)
     """retourne la liste des données des sous arbres
 
@@ -186,24 +188,24 @@ class ArbreDescision:
         """
         best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
         self.root = best_attr
-        print(self.root)
+        #print(self.root)
         for valeur in liste_tous_attr[best_attr]:
-            print(valeur)
+            #print(valeur)
             attributs_parent[best_attr]=valeur
             if est_unique(donnees_sous_arbre(data,attributs_parent),attributs_parent,attribut_classe):
                 self.children[valeur]=ArbreDescision(retourne_unique(donnees_sous_arbre(data,attributs_parent),attributs_parent,attribut_classe))
                 self.children[valeur].children={}
-                print(self.children[valeur].root)
+                #print(self.children[valeur].root)
                 #return(self.children[valeur])   
             
             elif len(data)==0:
-                 print("rien")
+                 #print("rien")
                  self.children[valeur]= None
                    
             elif identique(donnees_sous_arbre(donnees,attributs_parent),liste_tous_attr,attribut_classe):
                 self.children[valeur]=ArbreDescision(max(donnees_sous_arbre(donnees,attributs_parent), key=donnees_sous_arbre(donnees,attributs_parent).count)[attribut_classe])
                 self.children[valeur].children={}
-                print(self.children[valeur].root)
+                #print(self.children[valeur].root)
                        
             else:
                 self.children[valeur] = ArbreDescision()
@@ -214,11 +216,16 @@ class ArbreDescision:
         return(self)
 
     #A faire après    
-    def affiche_arbre(self):
-        if self.isleaf:
-            return(self.root)
-        else:
-            print(self.root)
+    def affiche_arbre(self,indent=0):
+        if self.root is None:
+            return
+        print(f"\033[38;5;{76+indent}m"+" " * indent,self.root+"\033[00m")
+        for valeur, child in self.children.items():
+            print(f"\033[38;5;{(76+(indent+2)*5)*2}m"+" " * (indent + 2), valeur+"\033[00m")
+            if isinstance(child, ArbreDescision):
+                child.affiche_arbre(indent + 4)
+            else:
+                print(f"\033[38;5;{(76+indent+4)*2}m"+" " * (indent + 4), child.root+"\033[00m")
             
     def prediction_arbre(self,cas):
         if self.isleaf():
@@ -247,13 +254,15 @@ def remplir_matrice(mat,arbre,data,liste_attr,attribut_class):
     
 
 #_________________________Zone de test_________________________#
-#print(gain_tous_attributs(donnees,attributs,"play"))
+data_app=donnees[0:10]
+data_pred=donnees[10:]
 attributs_parents={'outlook': 'rain', 'humidity': 'normal','wind':'true'}
 #print(donnees_sous_arbre(donnees,attributs_parents))
 #print(identique(donnees_sous_arbre(donnees,attributs_parents),attributs,"play"))
 arbre = ArbreDescision()
-print(arbre.create_tree(donnees,attributs,{},"play"))
-#arbre.affiche_arbre()
+arbre.create_tree(data_app,attributs,{},"play")
+print(f"\n\033[38;5;10m\033[1mAbre décisionnel\033[0m")
+arbre.affiche_arbre()
 mat=Matrice(attributs,"play")
-print(remplir_matrice(mat,arbre,donnees,attributs,"play").mat)
-print(mat.mat[1][0])
+print(f"\n\033[38;5;10m\033[1mMatrice de confusion\033[0m")
+print(remplir_matrice(mat,arbre,data_pred,attributs,"play").mat)
