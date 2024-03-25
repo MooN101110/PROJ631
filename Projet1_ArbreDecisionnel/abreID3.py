@@ -254,15 +254,19 @@ def remplir_matrice(mat,arbre,data,liste_attr,attribut_class):
     
 
 #_________________________Zone de test_________________________#
-data_app=donnees[0:10]
-data_pred=donnees[10:]
-attributs_parents={'outlook': 'rain', 'humidity': 'normal','wind':'true'}
+#attributs_parents={'outlook': 'rain', 'humidity': 'normal','wind':'true'}
 #print(donnees_sous_arbre(donnees,attributs_parents))
 #print(identique(donnees_sous_arbre(donnees,attributs_parents),attributs,"play"))
+
+data_app=donnees[0:10]
+data_pred=donnees[10:]
+
 arbre = ArbreDescision()
 arbre.create_tree(data_app,attributs,{},"play")
 print(f"\n\033[38;5;10m\033[1mAbre décisionnel\033[0m")
 arbre.affiche_arbre()
+
 mat=Matrice(attributs,"play")
 print(f"\n\033[38;5;10m\033[1mMatrice de confusion\033[0m")
-print(remplir_matrice(mat,arbre,data_pred,attributs,"play").mat)
+remplir_matrice(mat,arbre,data_pred,attributs,"play").mat
+print(mat)
