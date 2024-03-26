@@ -7,28 +7,7 @@ from matrice import *
 #Bouger dans le bon repertoire
 os.chdir('Projet1_ArbreDecisionnel')
 
-#_________________Récupération et organisation des données_________________________________________________________________________#
-
-#récupération de Sapp
-attributs={}
-donnees=[]
-with open("golf.csv","r") as f:
-    reader = csv.reader(f, delimiter=',')
-    for row in (reader):
-        if attributs=={}: #revoir condition
-            for elt in row:
-                attributs.update({elt:[]})
-        else:
-            keys=list(attributs.keys())
-            for i,key in enumerate (keys):
-                if row[i] not in attributs[key]:
-                    attributs[key].append(row[i])
-                    
-            formatage_donne={}
-            for j,attr in enumerate (attributs):
-                formatage_donne[attr] = row[j]
-            donnees.append(formatage_donne)
-            
+#_________________Récupération et organisation des données_________________________________________________________________________#          
 
 def donnees_sous_arbre(data,attributs_parent):  #Pourrait surement être amélioré (récursive)
     """retourne la liste des données des sous arbres
@@ -59,7 +38,10 @@ def retourne_unique(data,attributs_parents,attribut_classe="class"):
     """retourne l'attribut de décision unique (vrai/faux par exemple)
     """
     if est_unique(data,attributs_parents,attribut_classe):
-        return data[0][attribut_classe]
+        if data!=[]:
+            return data[0][attribut_classe]
+        else:
+            return None
     
 def identique(data,liste_tous_atr,attribut_classe="class"):
     """regarde si toutes les données sont identiques (on ne prend pas en compte l'attribut classe)
@@ -198,6 +180,40 @@ def ratio_gain_tous_attr(data,liste_tous_attr,attribut_classe):
     #print (affichage)
     return (sorted(res, key=operator.itemgetter(1)))
 
+
+#______________________Discrétiser______________________#
+
+def est_discretisable(attribut,liste_tous_attr):
+    """renvoie True si l'attribut en question est continu (nombre)
+    """
+    for i in range (0,len(liste_tous_attr[attribut])):
+        try:
+            float(liste_tous_attr[attribut][i])
+        except ValueError:
+            return False
+    return True
+
+def liste_valeur_a_discretise(liste_tous_attr):
+    res={}
+    for attr in list(liste_tous_attr.keys()):
+        if est_discretisable(attr,liste_tous_attr):
+            res[attr] = liste_tous_attr[attr]
+    return res
+
+def discretiser(data,liste_tous_attr,attribut,valeur_attr):
+    valeur_attr.sort()
+    indice_mediane=int(len(valeur_attr)/2)
+    mediane = float(valeur_attr[indice_mediane])
+    intervalle_inf=str([float("-inf"),mediane])
+    intervalle_sup=str([mediane+1,float("inf")])
+    for elt in data:
+        if float(elt[attribut])<=mediane:
+            elt[attribut]=intervalle_inf
+        else:
+            elt[attribut]=intervalle_sup
+    liste_tous_attr[attribut]=[intervalle_inf,intervalle_sup]
+    return(data,liste_tous_attr)
+    
 #__________________________________________________________________________________________________#
 
 #_________________________Construction de l'arbre_________________________#
@@ -210,7 +226,7 @@ class ArbreDescision:
     def isleaf(self):
         return self.children == {}
 
-    def create_tree(self,data,liste_tous_attr, attributs_parent={},attribut_classe="class",methode="ID3"):
+    def create_tree(self,data,liste_tous_attr, attributs_parent={},attribut_classe="class",methode="ID3",valeur_discrete=True):
         """Création de l'abre à l'aide de la récusrive
         
         data(tableau de dictionnaire) = liste des cas qui correspondent
@@ -222,6 +238,7 @@ class ArbreDescision:
             best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
         else:
             best_attr=ratio_gain_tous_attr(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
+        
         self.root = best_attr
         #print(self.root)
         for valeur in liste_tous_attr[best_attr]:
@@ -245,7 +262,7 @@ class ArbreDescision:
             else:
                 self.children[valeur] = ArbreDescision()
                 self.children[valeur].children={}
-                self.children[valeur].create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe,methode)
+                self.children[valeur].create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe,methode,valeur_discrete=True)
         self.root = best_attr
         del attributs_parent[self.root]
         return(self)
@@ -291,17 +308,45 @@ def remplir_matrice(mat,arbre,data,liste_attr,attribut_class):
 #attributs_parents={'outlook': 'overcast'}
 #print(donnees_sous_arbre(donnees,attributs_parents))
 #print(identique(donnees_sous_arbre(donnees,attributs_parents),attributs,"play"))
+#print(discretiser(donnees,attributs,'temp',['85', '80', '83', '70', '68', '65', '64', '72', '69', '75', '81', '71']))
 
-data_app=donnees[0:10]
-data_pred=donnees[10:]
 
-arbre = ArbreDescision()
-arbre.create_tree(data_app,attributs,{},"play","C4")
-print(f"\n\033[38;5;10m\033[1mArbre décisionnel\033[0m")
-arbre.affiche_arbre()
 
-mat=Matrice(attributs,"play")
-print(f"\n\033[38;5;10m\033[1mMatrice de confusion\033[0m")
-remplir_matrice(mat,arbre,data_pred,attributs,"play").mat
-print(mat)
+if __name__=="__main__":
+    
+    #récupération des données
+    attributs={}
+    donnees=[]
+    with open("golf_bis.csv","r") as f:
+        reader = csv.reader(f, delimiter=',')
+        for row in (reader):
+            if attributs=={}: #revoir condition
+                for elt in row:
+                    attributs.update({elt:[]})
+            else:
+                keys=list(attributs.keys())
+                for i,key in enumerate (keys):
+                    if row[i] not in attributs[key]:
+                        attributs[key].append(row[i])
+                        
+                formatage_donne={}
+                for j,attr in enumerate (attributs):
+                    formatage_donne[attr] = row[j]
+                donnees.append(formatage_donne)
+    
+        for attr in list(liste_valeur_a_discretise(attributs).keys()):
+            donnees,attributs = discretiser(donnees,attributs,attr,liste_valeur_a_discretise(attributs)[attr])
+                
+    
+    data_app=donnees[0:10]
+    data_pred=donnees[10:]
 
+    arbre = ArbreDescision()
+    arbre.create_tree(data_app,attributs,{},"play","C4",False)
+    print(f"\n\033[38;5;10m\033[1mArbre décisionnel\033[0m")
+    arbre.affiche_arbre()
+
+    mat=Matrice(attributs,"play")
+    print(f"\n\033[38;5;10m\033[1mMatrice de confusion\033[0m")
+    remplir_matrice(mat,arbre,data_pred,attributs,"play").mat
+    print(mat)
