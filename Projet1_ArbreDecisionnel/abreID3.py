@@ -159,7 +159,7 @@ def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
     """
     affichage=""
     res=[]
-    keys=list(attributs.keys())
+    keys=list(liste_attributs.keys())
     for key in (keys):
         if key!=attribut_classe:
             affichage+=f"gain {key}\t: {round(gain(data,liste_attributs,key,attribut_classe),3)}\n"
@@ -167,6 +167,38 @@ def gain_tous_attributs(data,liste_attributs,attribut_classe="class"):
     #print (affichage)
     return (sorted(res, key=operator.itemgetter(1)))
 #_______________________________________________________________________________________#
+
+#____________________________________________C4.5____________________________________________#
+
+def split_entropie(liste_tous_attr,attribut,data):
+    """retourne le split de l'entropie de l'attribut choisi
+    """
+    res=0
+    for valeur in liste_tous_attr[attribut]:
+        attr_parent={}
+        attr_parent[attribut]=valeur
+        sous_ensemble=donnees_sous_arbre(data,attr_parent)
+        if len(sous_ensemble)!=0:
+            res+=len(sous_ensemble)/len(data)*m.log2(len(sous_ensemble)/len(data))
+    return -res
+
+def ratio_gain(data,liste_tous_attr,attribut,attribut_classe="class"):
+    split=split_entropie(liste_tous_attr,attribut,data)
+    gaint=gain(data,liste_tous_attr,attribut,attribut_classe)
+    return(gaint/split if split != 0 else 0)
+
+def ratio_gain_tous_attr(data,liste_tous_attr,attribut_classe):
+    affichage=""
+    res=[]
+    keys=list(liste_tous_attr.keys())
+    for key in (keys):
+        if key!=attribut_classe:
+            affichage+=f" ratio gain {key}\t: {round(ratio_gain(data,liste_tous_attr,key,attribut_classe),3)}\n"
+            res.append([key,ratio_gain(data,liste_tous_attr,key,attribut_classe)])
+    #print (affichage)
+    return (sorted(res, key=operator.itemgetter(1)))
+
+#__________________________________________________________________________________________________#
 
 #_________________________Construction de l'arbre_________________________#
     
@@ -178,7 +210,7 @@ class ArbreDescision:
     def isleaf(self):
         return self.children == {}
 
-    def create_tree(self,data,liste_tous_attr, attributs_parent={},attribut_classe="class"):
+    def create_tree(self,data,liste_tous_attr, attributs_parent={},attribut_classe="class",methode="ID3"):
         """Création de l'abre à l'aide de la récusrive
         
         data(tableau de dictionnaire) = liste des cas qui correspondent
@@ -186,7 +218,10 @@ class ArbreDescision:
         attributs_parents (dictionnaire) = attributs déjà présents dans la branche
         attribut_classe (string) = nom colonne de déciscion
         """
-        best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
+        if methode=="ID3":
+            best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
+        else:
+            best_attr=ratio_gain_tous_attr(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
         self.root = best_attr
         #print(self.root)
         for valeur in liste_tous_attr[best_attr]:
@@ -199,23 +234,22 @@ class ArbreDescision:
                 #return(self.children[valeur])   
             
             elif len(data)==0:
-                 #print("rien")
-                 self.children[valeur]= None
-                   
+                #print("rien")
+                self.children[valeur]= None
+                
             elif identique(donnees_sous_arbre(donnees,attributs_parent),liste_tous_attr,attribut_classe):
                 self.children[valeur]=ArbreDescision(max(donnees_sous_arbre(donnees,attributs_parent), key=donnees_sous_arbre(donnees,attributs_parent).count)[attribut_classe])
                 self.children[valeur].children={}
                 #print(self.children[valeur].root)
-                       
+                    
             else:
                 self.children[valeur] = ArbreDescision()
                 self.children[valeur].children={}
-                self.children[valeur].create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe)
+                self.children[valeur].create_tree(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attributs_parent,attribut_classe,methode)
         self.root = best_attr
         del attributs_parent[self.root]
         return(self)
 
-    #A faire après    
     def affiche_arbre(self,indent=0):
         if self.root is None:
             return
@@ -254,7 +288,7 @@ def remplir_matrice(mat,arbre,data,liste_attr,attribut_class):
     
 
 #_________________________Zone de test_________________________#
-#attributs_parents={'outlook': 'rain', 'humidity': 'normal','wind':'true'}
+#attributs_parents={'outlook': 'overcast'}
 #print(donnees_sous_arbre(donnees,attributs_parents))
 #print(identique(donnees_sous_arbre(donnees,attributs_parents),attributs,"play"))
 
@@ -262,11 +296,12 @@ data_app=donnees[0:10]
 data_pred=donnees[10:]
 
 arbre = ArbreDescision()
-arbre.create_tree(data_app,attributs,{},"play")
-print(f"\n\033[38;5;10m\033[1mAbre décisionnel\033[0m")
+arbre.create_tree(data_app,attributs,{},"play","C4")
+print(f"\n\033[38;5;10m\033[1mArbre décisionnel\033[0m")
 arbre.affiche_arbre()
 
 mat=Matrice(attributs,"play")
 print(f"\n\033[38;5;10m\033[1mMatrice de confusion\033[0m")
 remplir_matrice(mat,arbre,data_pred,attributs,"play").mat
 print(mat)
+
