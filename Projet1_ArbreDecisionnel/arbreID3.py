@@ -317,7 +317,7 @@ if __name__=="__main__":
     #récupération des données
     attributs={}
     donnees=[]
-    with open("golf_bis.csv","r") as f:
+    with open("golf copy.csv","r") as f:
         reader = csv.reader(f, delimiter=',')
         for row in (reader):
             if attributs=={}: #revoir condition
@@ -326,19 +326,30 @@ if __name__=="__main__":
             else:
                 keys=list(attributs.keys())
                 for i,key in enumerate (keys):
-                    if row[i] not in attributs[key]:
-                        attributs[key].append(row[i])
+                    if row[i]!="?":
+                        if row[i] not in attributs[key]:
+                            attributs[key].append(row[i])
                         
                 formatage_donne={}
                 for j,attr in enumerate (attributs):
                     formatage_donne[attr] = row[j]
                 donnees.append(formatage_donne)
+    print(donnees)      
+    donnees_ok=[]       
+    for row in donnees:
+        ok=True
+        for attr in row:
+            if row[attr]=="?":
+                ok=False
+        if ok==True:
+            donnees_ok.append(row)
+    print(donnees_ok)
     
-        for attr in list(liste_valeur_a_discretise(attributs).keys()):
-            donnees,attributs = discretiser(donnees,attributs,attr,liste_valeur_a_discretise(attributs)[attr])
+    for attr in list(liste_valeur_a_discretise(attributs).keys()):
+        donnees,attributs = discretiser(donnees,attributs,attr,liste_valeur_a_discretise(attributs)[attr])
                 
-    
-    data_app=donnees[0:10]
+
+    data_app=donnees[0:-1]
     data_pred=donnees[10:]
 
     arbre = ArbreDescision()
