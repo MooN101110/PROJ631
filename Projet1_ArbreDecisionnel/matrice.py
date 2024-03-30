@@ -11,6 +11,8 @@ class Matrice:
                 self.mat[i].append(0)
     
     def __str__(self):
+        """Surcharge de l'opérateur pour pouvoir afficher la matrice joliment
+        """
         res="\t"
         for elt in self.choix:
             res+=f"\033[38;5;209m{str(elt)}\t\033[0m"
