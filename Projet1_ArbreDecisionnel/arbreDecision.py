@@ -275,8 +275,6 @@ class ArbreDecision:
         if methode=="ID3":
             best_attr=gain_tous_attributs(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
         else: #C4.5
-            for attr in list(liste_valeur_a_discretise(liste_tous_attr).keys()):
-                data,liste_tous_attr = discretiser(data,liste_tous_attr,attr,liste_valeur_a_discretise(liste_tous_attr)[attr])
             best_attr=ratio_gain_tous_attr(data,liste_tous_attr,attribut_classe)[-1][0] #recupération du nom
         
         
@@ -295,8 +293,8 @@ class ArbreDecision:
                 #print("rien")
                 self.children[valeur]= None
                 
-            elif identique(donnees_sous_arbre(donnees,attributs_parent),liste_tous_attr,attribut_classe):
-                self.children[valeur]=ArbreDecision(max(donnees_sous_arbre(donnees,attributs_parent), key=donnees_sous_arbre(donnees,attributs_parent).count)[attribut_classe])
+            elif identique(donnees_sous_arbre(data,attributs_parent),liste_tous_attr,attribut_classe):
+                self.children[valeur]=ArbreDecision(max(donnees_sous_arbre(data,attributs_parent), key=donnees_sous_arbre(donnees,attributs_parent).count)[attribut_classe])
                 self.children[valeur].children={}
                 #print(self.children[valeur].root)
                     
@@ -398,22 +396,3 @@ def recuperation_donnees_ok(chemin):
 #print(discretiser(donnees,attributs,'temp',['85', '80', '83', '70', '68', '65', '64', '72', '69', '75', '81', '71']))
 
 
-##################################################################################################
-#____________________________________________MAIN________________________________________________#
-##################################################################################################
-
-if __name__=="__main__":
-                
-    donnees,attributs=recuperation_donnees("golf_bis.csv")
-    data_app=donnees[0:-1]
-    data_pred=donnees[10:]
-
-    arbre = ArbreDecision()
-    arbre.create_tree(data_app,attributs,{},"play","",False)
-    print(f"\n\033[38;5;10m\033[1mArbre décisionnel\033[0m")
-    arbre.affiche_arbre()
-
-    mat=Matrice(attributs,"play")
-    print(f"\n\033[38;5;10m\033[1mMatrice de confusion\033[0m")
-    remplir_matrice(mat,arbre,data_pred,attributs,"play").mat
-    print(mat)

@@ -1,0 +1,30 @@
+import arbreDecision as ad
+import matrice as m
+
+##################################################################################################
+#____________________________________________MAIN________________________________________________#
+##################################################################################################
+
+if __name__=="__main__":
+     
+    #Pour ID3           
+    # donnees,attributs=recuperation_donnees("golf.csv")
+    # data_app=donnees[0:10]
+    # data_pred=donnees[10:]
+    
+    #Pour C4.5
+    donnees,attributs=ad.recuperation_donnees("golf_bis.csv")
+    for attr in list(ad.liste_valeur_a_discretise(attributs).keys()):
+        donnees,attributs = ad.discretiser(donnees,attributs,attr,ad.liste_valeur_a_discretise(attributs)[attr])
+    data_app=donnees[0:10]
+    data_pred=donnees[10:]
+
+    arbre = ad.ArbreDecision()
+    arbre.create_tree(data_app,attributs,{},"play","",False)
+    print(f"\n\033[38;5;10m\033[1mArbre décisionnel\033[0m")
+    arbre.affiche_arbre()
+
+    mat=m.Matrice(attributs,"play")
+    print(f"\n\033[38;5;10m\033[1mMatrice de confusion\033[0m")
+    ad.remplir_matrice(mat,arbre,data_pred,attributs,"play").mat
+    print(mat)
