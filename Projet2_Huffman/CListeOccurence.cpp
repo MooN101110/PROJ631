@@ -5,8 +5,8 @@ CListeOccurence::CListeOccurence()
 {
 }
 
-CListeOccurence::CListeOccurence(COccurence* pl)
-	:m_pListe(pl), m_nTaille(0)
+CListeOccurence::CListeOccurence(COccurence* pl,int nTaille)
+	:m_pListe(pl), m_nTaille(nTaille)
 {
 }
 
@@ -44,10 +44,48 @@ void CListeOccurence::Ajouter(char c)
 	}
 }
 
+void CListeOccurence::Trier()
+{
+	COccurence* tab_trie = new COccurence[m_nTaille];
+	CListeOccurence liste_trie(tab_trie,m_nTaille);
+
+	for (int i = 0; i < m_nTaille; i++) {
+		COccurence min_elt;
+		for (int j = 0; j < m_nTaille; j++) {
+			if (!liste_trie.Dedans(m_pListe[j])) {
+				if (((m_pListe[j].Get_frequence() < min_elt.Get_frequence())
+					||(((m_pListe[j].Get_frequence() == min_elt.Get_frequence()))
+					&& ((int)m_pListe[j].Get_caractere() < (int)min_elt.Get_caractere())))
+					|| min_elt.Get_frequence() == 0) {
+						min_elt = m_pListe[j];
+				}
+			}
+		}
+
+		tab_trie[i] = min_elt;
+	}
+	if (this != &liste_trie) {
+		for (int i = 0; i < m_nTaille; i++) {
+			m_pListe[i] = liste_trie.m_pListe[i];
+		}
+	}
+}
+
+bool CListeOccurence::Dedans(COccurence c)
+{
+	bool res = false;
+	for (int i = 0; i < m_nTaille; i++) {
+		if (m_pListe[i].Get_caractere() == c.Get_caractere()) {
+			res = true;
+		}
+	}
+	return res;
+}
+
 ostream& operator<<(ostream& os, const CListeOccurence& l)
 {
 	for (int i = 0; i < l.m_nTaille; i++) {
-		os << l.m_pListe[i] << endl;
+		os << l.m_pListe[i];
 	}
 	return os;
 }
@@ -55,7 +93,7 @@ ostream& operator<<(ostream& os, const CListeOccurence& l)
 ofstream& operator<<(ofstream& fs, const CListeOccurence& l)
 {
 	for (int i = 0; i < l.m_nTaille; i++) {
-		fs << l.m_pListe[i] << endl;
+		fs << l.m_pListe[i];
 	}
 	return fs;
 }

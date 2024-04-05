@@ -7,17 +7,17 @@ using namespace std;
 
 int main()
 {
-	const char* filename;
-	filename = "data/test.txt";
+	string filename;
+	filename = "test1";
 
-	ofstream fichier(filename);
-	fichier << "marche s'il te plaît";
+	ofstream fichier("data/"+filename +".txt");
+	fichier << "Bonjour   !";
 
 	fichier.close();
 
 	CListeOccurence lo;
 
-	ifstream is(filename);
+	ifstream is("data/"+filename+".txt");
 	string buffer; 
 	while (getline(is, buffer)) {
 		const char* str = buffer.data();
@@ -26,6 +26,14 @@ int main()
 			lo.Ajouter(buffer[i]);
 		}
 	}
+	is.close();
+	cout << lo<<endl;
+	lo.Trier();
 	cout << lo;
+
+	//Enregistrement de la fréquence dans un fichier
+	ofstream fichier_freq("data/"+filename+"_freq.txt");
+	fichier_freq << lo;
+
 
 }

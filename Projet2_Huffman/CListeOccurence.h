@@ -12,7 +12,7 @@ private:
 
 public:
 	CListeOccurence();
-	CListeOccurence(COccurence* occ);
+	CListeOccurence(COccurence* occ,int );
 	CListeOccurence(const CListeOccurence& l);
 	~CListeOccurence();
 
@@ -21,5 +21,7 @@ public:
 	friend ofstream& operator<< (ofstream&, const CListeOccurence&);
 
 	void Ajouter(char c);
+	void Trier();
+	bool Dedans(COccurence c);
 };
 

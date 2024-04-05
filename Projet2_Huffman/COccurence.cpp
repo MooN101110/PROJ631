@@ -24,6 +24,11 @@ char COccurence::Get_caractere()
 	return m_cCaractere;
 }
 
+int COccurence::Get_frequence()
+{
+	return m_nFrequence;
+}
+
 void COccurence::Incrementer()
 {
 	++m_nFrequence;

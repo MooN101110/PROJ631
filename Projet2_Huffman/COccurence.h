@@ -16,6 +16,7 @@ class COccurence
 		~COccurence();
 
 		char Get_caractere();
+		int Get_frequence();
 
 		friend ostream& operator<< (ostream&, const COccurence&);
 		friend ofstream& operator<< (ofstream&, const COccurence&);
