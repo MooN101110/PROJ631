@@ -21,7 +21,14 @@ public:
 	friend ofstream& operator<< (ofstream&, const CListeOccurence&);
 
 	void Ajouter(char c);
+	void Ajouter_noeud(char c,int frequence);
 	void Trier();
 	bool Dedans(COccurence c);
+
+	int Get_size();
+
+	COccurence* get_2_min();
+
+	
 };
 

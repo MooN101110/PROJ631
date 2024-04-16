@@ -44,6 +44,22 @@ void CListeOccurence::Ajouter(char c)
 	}
 }
 
+void CListeOccurence::Ajouter_noeud(char c,int frequence)
+{
+	COccurence noeud(c, frequence);
+	COccurence* new_tab = new COccurence[m_nTaille-1];
+	for (int i = 2; i < m_nTaille; i++) {
+		new_tab[i-2] = m_pListe[i];
+	}
+	new_tab[m_nTaille-2] = noeud;
+	--m_nTaille;
+	delete[] m_pListe;
+	m_pListe = new_tab;
+
+	//Trie du tableau
+	this->Trier();
+}
+
 void CListeOccurence::Trier()
 {
 	COccurence* tab_trie = new COccurence[m_nTaille];
@@ -81,6 +97,20 @@ bool CListeOccurence::Dedans(COccurence c)
 	}
 	return res;
 }
+
+int CListeOccurence::Get_size()
+{
+	return m_nTaille;
+}
+
+COccurence* CListeOccurence::get_2_min()
+{
+	COccurence* listeMin = new COccurence[2];
+	listeMin[0] = m_pListe[0];
+	listeMin[1] = m_pListe[1];
+	return listeMin;
+}
+
 
 ostream& operator<<(ostream& os, const CListeOccurence& l)
 {

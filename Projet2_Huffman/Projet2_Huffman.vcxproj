@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CArbreBinaire.cpp" />
     <ClCompile Include="CListeOccurence.cpp" />
     <ClCompile Include="COccurence.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CArbreBinaire.h" />
     <ClInclude Include="CListeOccurence.h" />
     <ClInclude Include="COccurence.h" />
   </ItemGroup>
