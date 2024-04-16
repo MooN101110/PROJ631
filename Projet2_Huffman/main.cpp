@@ -34,11 +34,12 @@ int main()
 	ofstream fichier_freq("data/"+filename+"_freq.txt");
 	fichier_freq << lo;
 	
+	//Création de l'arbre
+	cout << "Arbre Binaire :" << endl;
 	CArbreBinaire arbre;
 	arbre.creer_arbre(lo);
 	
 
-	//Création de l'arbre
 	//CArbreBinaire filsD('a', 7);
 	//CArbreBinaire filsD1('q', 3);
 	//CArbreBinaire filsG('b', 4);
