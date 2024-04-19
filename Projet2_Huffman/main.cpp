@@ -39,11 +39,9 @@ int main()
 	CArbreBinaire arbre;
 	arbre.creer_arbre(lo);
 	
+	//Enregistrement dans un fichier
+	ofstream fichier_comp("data/" + filename +"_comp.bin");
+	fichier_comp << "012";
 
-	//CArbreBinaire filsD('a', 7);
-	//CArbreBinaire filsD1('q', 3);
-	//CArbreBinaire filsG('b', 4);
-	//CArbreBinaire arbre('C', 1, filsG, filsD);
-	//filsG.set_fils_droit(filsD1);
-	//arbre.afficher_arbre();
+
 }

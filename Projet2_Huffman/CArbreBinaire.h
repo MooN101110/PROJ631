@@ -26,6 +26,9 @@ class CArbreBinaire
 		void set_Nom(char c);
 		void set_Freq(int f);
 		int Get_freq();
+		char get_nom();
+		CArbreBinaire get_fils_gauche();
+		CArbreBinaire get_fils_droit();
 		
 		
 		bool est_feuille();
@@ -35,6 +38,10 @@ class CArbreBinaire
 		void afficher_arbre(int indent);
 		void creer_arbre(CListeOccurence& lo);
 		void creer_arbre(CListeOccurence& lo, CArbreBinaire* listeArbre, int i);
+
+		bool trouve_un_caractere(char c);
+		const char* codage_un_caractere(char c);
+		const char* codage_un_caractere(char c, char* code, int i);
 
 
 		friend ostream& operator<< (ostream&, const CArbreBinaire&);

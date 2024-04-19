@@ -58,6 +58,21 @@ int CArbreBinaire::Get_freq()
 	return m_nFrequence;
 }
 
+char CArbreBinaire::get_nom()
+{
+	return m_cNom;
+}
+
+CArbreBinaire CArbreBinaire::get_fils_gauche()
+{
+	return *this->m_AbrGauche;
+}
+
+CArbreBinaire CArbreBinaire::get_fils_droit()
+{
+	return *this->m_AbrDroit;
+}
+
 bool CArbreBinaire::est_feuille()
 {
 	return this->m_AbrDroit == NULL && this->m_AbrGauche == NULL;
@@ -132,6 +147,70 @@ void CArbreBinaire::creer_arbre(CListeOccurence& lo, CArbreBinaire* listeArbre, 
 	//Lier les arbres
 	this->afficher_arbre();
 }
+
+bool CArbreBinaire::trouve_un_caractere(char c)
+{
+	if (this->est_feuille() && this->get_nom() == c) {
+		//cout << "car trouvé \n";
+		return true;
+	}
+	else {
+		if (this->m_AbrGauche != NULL && this->get_fils_gauche().trouve_un_caractere(c)) {
+			//cout << "0-";
+			return true;
+		}
+		if (this->m_AbrDroit != NULL && this->get_fils_droit().trouve_un_caractere(c)) {
+			//cout << "1-";
+			return true;
+		}
+	}
+	return false;
+}
+
+const char* CArbreBinaire::codage_un_caractere(char c, char* code, int i)
+{
+	if (this->est_feuille() && this->get_nom() == c) {
+		return code;
+	}
+	else {
+		if (this->m_AbrGauche != NULL && this->get_fils_gauche().trouve_un_caractere(c)) {
+			code[i] = '0';
+			this->get_fils_gauche().codage_un_caractere(c, code, i+1);
+	
+		}
+		if (this->m_AbrDroit != NULL && this->get_fils_droit().trouve_un_caractere(c)) {
+			code[i] = '1';
+			this->get_fils_droit().codage_un_caractere(c, code, i+1);
+
+		}
+	}
+	return code;
+}
+
+const char* CArbreBinaire::codage_un_caractere(char c)
+{
+	char* code = new char[24];
+
+	this->codage_un_caractere(c, code, 0);
+	
+	//Mise en forme correct du tableau
+	int i = 0;
+	while (code[i] == '1' || code[i] == '0') {
+		++i;
+	}
+
+	char* code_compresse = new char[i+1];
+
+	for (int j=0; j < i; j++) {
+		code_compresse[j] = code[j];
+	}
+	code_compresse[i] = '\0';
+
+	delete[] code;
+
+	return code_compresse;
+}
+
 
 
 ostream& operator<<(ostream& os, const CArbreBinaire& a)

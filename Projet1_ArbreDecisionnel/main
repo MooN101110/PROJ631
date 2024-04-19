@@ -8,16 +8,16 @@ import matrice as m
 if __name__=="__main__":
      
     #Pour ID3           
-    # donnees,attributs=recuperation_donnees("golf.csv")
-    # data_app=donnees[0:10]
-    # data_pred=donnees[10:]
-    
-    #Pour C4.5
-    donnees,attributs=ad.recuperation_donnees("golf_bis.csv")
-    for attr in list(ad.liste_valeur_a_discretise(attributs).keys()):
-        donnees,attributs = ad.discretiser(donnees,attributs,attr,ad.liste_valeur_a_discretise(attributs)[attr])
+    donnees,attributs=ad.recuperation_donnees("golf.csv")
     data_app=donnees[0:10]
     data_pred=donnees[10:]
+    
+    # #Pour C4.5
+    # donnees,attributs=ad.recuperation_donnees("golf_bis.csv")
+    # for attr in list(ad.liste_valeur_a_discretise(attributs).keys()):
+    #     donnees,attributs = ad.discretiser(donnees,attributs,attr,ad.liste_valeur_a_discretise(attributs)[attr])
+    # data_app=donnees[0:10]
+    # data_pred=donnees[10:]
 
     arbre = ad.ArbreDecision()
     arbre.create_tree(data_app,attributs,{},"play","",False)

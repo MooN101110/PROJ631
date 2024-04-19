@@ -103,6 +103,11 @@ int CListeOccurence::Get_size()
 	return m_nTaille;
 }
 
+void CListeOccurence::codage(string file, CArbreBinaire& arbre)
+{
+
+}
+
 COccurence* CListeOccurence::get_2_min()
 {
 	COccurence* listeMin = new COccurence[2];
