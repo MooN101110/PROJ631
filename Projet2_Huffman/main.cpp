@@ -4,7 +4,15 @@
 #include <string>
 #include "CArbreBinaire.h"
 
+
+
 using namespace std;
+
+double taille_fichier(const string file) 
+{
+	ifstream fichier(file, ios::binary | ios::ate);
+	return fichier.tellg();
+}
 
 int main()
 {
@@ -24,7 +32,7 @@ int main()
 		}
 	}
 	is.close();
-	cout << "Frequence des characteres :" << endl;
+	cout << endl << "Frequence des characteres :" << endl;
 	cout << lo << endl;
 	lo.Trier();
 	cout << "Frequence triee des characteres :" << endl;
@@ -39,9 +47,16 @@ int main()
 	CArbreBinaire arbre;
 	arbre.creer_arbre(lo);
 	
-	//Enregistrement dans un fichier
-	ofstream fichier_comp("data/" + filename +"_comp.bin");
-	fichier_comp << "012";
+	//Enregistrement dans fichier binaire
+	arbre.ecrire_binaire(filename);
+	
+
+	//Vérification de la compression
+	double taille_origine = taille_fichier("data/" + filename + ".txt");
+	double taille_compresse = taille_fichier("data/" + filename + "_comp.bin");
+
+	cout << endl << "Taille du fichier d'origine : " << taille_origine << endl;
+	cout << "Taille du fichier compresse: " << taille_compresse << endl;
 
 
 }

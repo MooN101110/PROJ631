@@ -1,8 +1,8 @@
 #pragma once
 #include "COccurence.h"
-#include "CArbreBinaire.h"
 #include <iostream>
 #include <fstream>
+
 using namespace std;
 
 class CListeOccurence
@@ -27,8 +27,6 @@ public:
 	bool Dedans(COccurence c);
 
 	int Get_size();
-
-	void codage(string file, CArbreBinaire& arbre);
 
 	COccurence* get_2_min();
 

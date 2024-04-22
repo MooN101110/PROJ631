@@ -37,12 +37,14 @@ class CArbreBinaire
 		void afficher_arbre();
 		void afficher_arbre(int indent);
 		void creer_arbre(CListeOccurence& lo);
-		void creer_arbre(CListeOccurence& lo, CArbreBinaire* listeArbre, int i);
+		void creer_arbre2(CListeOccurence& lo, CArbreBinaire* listeArbre, int i);
 
 		bool trouve_un_caractere(char c);
 		const char* codage_un_caractere(char c);
 		const char* codage_un_caractere(char c, char* code, int i);
 
+		void encodage_binaire(string filename, string buffer);
+		void ecrire_binaire(string filename);
 
 		friend ostream& operator<< (ostream&, const CArbreBinaire&);
 		

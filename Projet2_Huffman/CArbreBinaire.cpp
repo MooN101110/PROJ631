@@ -1,6 +1,8 @@
 #include "CArbreBinaire.h"
 #include <iostream>
 
+using namespace std;
+
 
 CArbreBinaire::CArbreBinaire()
 	:m_cNom(NULL),m_nFrequence(0),m_AbrDroit(NULL),m_AbrGauche(NULL)
@@ -106,10 +108,10 @@ void CArbreBinaire::afficher_arbre(int indent)
 void CArbreBinaire::creer_arbre(CListeOccurence& lo)
 {
 	CArbreBinaire* listeArbre= new CArbreBinaire[lo.Get_size()];
-	this->creer_arbre(lo,listeArbre, 0);
+	this->creer_arbre2(lo,listeArbre, 0);
 }
 
-void CArbreBinaire::creer_arbre(CListeOccurence& lo, CArbreBinaire* listeArbre, int i)
+void CArbreBinaire::creer_arbre2(CListeOccurence& lo, CArbreBinaire* listeArbre, int i)
 {
 	while (lo.Get_size() > 1) {
 		COccurence* listeMin = new COccurence[2];
@@ -185,6 +187,63 @@ const char* CArbreBinaire::codage_un_caractere(char c, char* code, int i)
 		}
 	}
 	return code;
+}
+
+void CArbreBinaire::encodage_binaire(string filename,string buffer)
+{
+	ofstream fichier("data/" + filename + "_comp.bin", ios::out | ios::binary);
+
+	int taille_buffer = buffer.length();
+
+	//travail octet par octet
+	for (int i = 0; i < taille_buffer; i += 8) {
+		string binaire8 = "";
+
+		if (i < taille_buffer - 8) {
+			binaire8 = buffer.substr(i, i + 8);
+		}
+		else {
+			binaire8 = buffer.substr(i, taille_buffer);
+		}
+		unsigned char octet = 0;
+		cout <<endl<< binaire8<<" - ";
+		//Utilisation des booléens pour écrire en binaire
+		for (int j = 0; j < 8; ++j) {
+			bool resultat = true;
+			if (j < binaire8.length()) {
+				resultat = (binaire8[j] & 1);
+				octet +=resultat;
+				cout << resultat;
+			}
+		}
+
+		fichier.put(octet);
+		taille_buffer = buffer.length();
+	}
+	fichier.close();
+
+	cout << endl << "Fichier binaire cree avec succes" << endl;
+}
+
+void CArbreBinaire::ecrire_binaire(string filename)
+{
+	ifstream fichier("data/" + filename + ".txt");
+	string buffer;
+	string line;
+
+	if (!fichier) {
+		cerr << "Erreur lors de l'ouverture du fichier" << endl;
+	}
+	else {
+		while (getline(fichier, line)) {
+			for (int i = 0; i < line.length(); i++) {
+				buffer += this->codage_un_caractere(line[i]);
+			}
+		}
+		fichier.close();
+		encodage_binaire(filename, buffer);
+	}
+
 }
 
 const char* CArbreBinaire::codage_un_caractere(char c)
