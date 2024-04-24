@@ -1,3 +1,5 @@
-﻿  main.cpp
-D:\Louna\Documents\Polytech\Semestre 6\PROJ631\PROJ631\Projet2_Huffman\main.cpp(14,22): warning C4244: 'return' : conversion de 'std::streamoff' en 'double', perte possible de données
+﻿  CArbreBinaire.cpp
+D:\Louna\Documents\Polytech\Semestre 6\PROJ631\PROJ631\Projet2_Huffman\CArbreBinaire.cpp(223,20): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+D:\Louna\Documents\Polytech\Semestre 6\PROJ631\PROJ631\Projet2_Huffman\CArbreBinaire.cpp(249,32): warning C4267: '=' : conversion de 'size_t' en 'int', perte possible de données
+D:\Louna\Documents\Polytech\Semestre 6\PROJ631\PROJ631\Projet2_Huffman\CArbreBinaire.cpp(287,15): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
   Projet2_Huffman.vcxproj -> D:\Louna\Documents\Polytech\Semestre 6\PROJ631\PROJ631\Projet2_Huffman\x64\Debug\Projet2_Huffman.exe

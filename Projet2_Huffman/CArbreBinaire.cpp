@@ -117,7 +117,8 @@ void CArbreBinaire::creer_arbre2(CListeOccurence& lo, CArbreBinaire* listeArbre,
 		COccurence* listeMin = new COccurence[2];
 		listeMin = lo.get_2_min();
 		int frequence = listeMin[0].Get_frequence() + listeMin[1].Get_frequence();
-		char car = listeMin[0].Get_caractere() + listeMin[1].Get_caractere();
+		//char car = listeMin[0].Get_caractere() + listeMin[1].Get_caractere();
+		char car = static_cast<char>(frequence);
 
 		//Création arbre 
 		CArbreBinaire *gauche = new CArbreBinaire(listeMin[0].Get_caractere(), listeMin[0].Get_frequence());
@@ -130,25 +131,25 @@ void CArbreBinaire::creer_arbre2(CListeOccurence& lo, CArbreBinaire* listeArbre,
 		//this->afficher_arbre();
 
 		for (int a = 0; a < i; a++) {
+
 			if (gauche->Get_freq() == listeArbre[a].Get_freq()) {
 				this->set_fils_gauche(listeArbre[a]);
 			}
 			else if (droit->Get_freq() == listeArbre[a].Get_freq()) {
 				this->set_fils_droit(listeArbre[a]);
+
 			}
 		}
-
 		listeArbre[i] = *this;
+		++i;
 
 		//Mise à jour de la liste
 		lo.Ajouter_noeud(car, frequence);
 
-		++i;
-
 	}
-	//Lier les arbres
 	this->afficher_arbre();
 }
+
 
 bool CArbreBinaire::trouve_un_caractere(char c)
 {

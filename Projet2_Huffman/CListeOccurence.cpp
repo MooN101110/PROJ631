@@ -46,19 +46,38 @@ void CListeOccurence::Ajouter(char c)
 
 void CListeOccurence::Ajouter_noeud(char c,int frequence)
 {
+	//on part du principe que nous avons déjà une liste triée et que l'on souhaite juste rajouter un element au bon endroit
+
 	COccurence noeud(c, frequence);
 	COccurence* new_tab = new COccurence[m_nTaille-1];
+	bool place = false;
+
 	for (int i = 2; i < m_nTaille; i++) {
-		new_tab[i-2] = m_pListe[i];
+		if (place) {
+			new_tab[i - 1] = m_pListe[i];
+
+		}
+		else {
+			if (frequence < m_pListe[i].Get_frequence()){
+				new_tab[i - 2] = noeud;
+				new_tab[i - 1] = m_pListe[i];
+				place = true;
+			}
+			else {
+				new_tab[i - 2] = m_pListe[i];
+			}
+		}
 	}
-	new_tab[m_nTaille-2] = noeud;
+	if (!place) {
+		new_tab[m_nTaille - 2] = noeud;
+	}
 	--m_nTaille;
 	delete[] m_pListe;
 	m_pListe = new_tab;
 
-	//Trie du tableau
-	this->Trier();
+
 }
+
 
 void CListeOccurence::Trier()
 {

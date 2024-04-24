@@ -17,7 +17,7 @@ double taille_fichier(const string file)
 int main()
 {
 	string filename;
-	filename = "test";
+	filename = "textesimple";
 
 	CListeOccurence lo;
 
