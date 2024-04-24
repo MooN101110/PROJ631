@@ -32,7 +32,7 @@ class CArbreBinaire
 		
 		
 		bool est_feuille();
-		
+		bool est_dans_liste(int* liste, int n, int taille);
 
 		void afficher_arbre();
 		void afficher_arbre(int indent);

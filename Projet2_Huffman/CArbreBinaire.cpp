@@ -80,6 +80,16 @@ bool CArbreBinaire::est_feuille()
 	return this->m_AbrDroit == NULL && this->m_AbrGauche == NULL;
 }
 
+bool CArbreBinaire::est_dans_liste(int* liste, int n, int t)
+{
+	for (int i = 0; i < t; ++i) {
+		if (n == liste[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
 void CArbreBinaire::afficher_arbre()
 {
 	this->afficher_arbre(0);
@@ -105,6 +115,8 @@ void CArbreBinaire::afficher_arbre(int indent)
 	}
 }
 
+
+
 void CArbreBinaire::creer_arbre(CListeOccurence& lo)
 {
 	CArbreBinaire* listeArbre= new CArbreBinaire[lo.Get_size()];
@@ -113,12 +125,13 @@ void CArbreBinaire::creer_arbre(CListeOccurence& lo)
 
 void CArbreBinaire::creer_arbre2(CListeOccurence& lo, CArbreBinaire* listeArbre, int i)
 {
+	int* indice_place = new int[lo.Get_size()*2];
+	int j = 0;
+
 	while (lo.Get_size() > 1) {
 		COccurence* listeMin = new COccurence[2];
 		listeMin = lo.get_2_min();
 		int frequence = listeMin[0].Get_frequence() + listeMin[1].Get_frequence();
-		//char car = listeMin[0].Get_caractere() + listeMin[1].Get_caractere();
-		char car = static_cast<char>(frequence);
 
 		//Création arbre 
 		CArbreBinaire *gauche = new CArbreBinaire(listeMin[0].Get_caractere(), listeMin[0].Get_frequence());
@@ -130,21 +143,31 @@ void CArbreBinaire::creer_arbre2(CListeOccurence& lo, CArbreBinaire* listeArbre,
 
 		//this->afficher_arbre();
 
+		bool ok_gauche = false;
+		bool ok_droit = false;
+
+
 		for (int a = 0; a < i; a++) {
 
-			if (gauche->Get_freq() == listeArbre[a].Get_freq()) {
+			if (gauche->Get_freq() == listeArbre[a].Get_freq() && (gauche->get_nom()==NULL) && (est_dans_liste(indice_place, a, j) == false) && (ok_gauche == false)) {
 				this->set_fils_gauche(listeArbre[a]);
+				indice_place[j] = a;
+				++j;
+				ok_gauche = true;
 			}
-			else if (droit->Get_freq() == listeArbre[a].Get_freq()) {
+			else if (droit->Get_freq() == listeArbre[a].Get_freq() && (droit->get_nom() == NULL) && !(est_dans_liste(indice_place, a, j)) && (!ok_droit)) {
 				this->set_fils_droit(listeArbre[a]);
-
+				indice_place[j] = a;
+				++j;
+				ok_droit = true;
 			}
 		}
 		listeArbre[i] = *this;
 		++i;
 
+
 		//Mise à jour de la liste
-		lo.Ajouter_noeud(car, frequence);
+		lo.Ajouter_noeud(NULL, frequence);
 
 	}
 	this->afficher_arbre();
@@ -277,17 +300,20 @@ void CArbreBinaire::ecrire_binaire(string filename)
 double CArbreBinaire::nb_moyen_bits(string filename)
 {
 	double nb_moyen = 0.0;
+	int nb_char = 0;
 
 	ifstream is("data/" + filename + "_freq.txt");
 	string buffer;
 
 	while (getline(is, buffer)) {
 		const char* str = buffer.data();
-		float pourcentage = stof(buffer.substr(1, strlen(str)))/100;
+		float pourcentage = stof(buffer.substr(1, strlen(str)));
 		int nb_bits = strlen(codage_un_caractere(buffer[0]));
 		nb_moyen += nb_bits * pourcentage;
+		nb_char += pourcentage;
 	}
-	return nb_moyen;
+	is.close();
+	return nb_moyen/nb_char;
 }
 
 
