@@ -169,6 +169,31 @@ bool CArbreBinaire::trouve_un_caractere(char c)
 	return false;
 }
 
+const char* CArbreBinaire::codage_un_caractere(char c)
+{
+	char* code = new char[24];
+
+	this->codage_un_caractere(c, code, 0);
+
+	//Mise en forme correct du tableau
+	int i = 0;
+	while (code[i] == '1' || code[i] == '0') {
+		++i;
+	}
+
+	char* code_compresse = new char[i + 1];
+
+	for (int j = 0; j < i; j++) {
+		code_compresse[j] = code[j];
+	}
+	code_compresse[i] = '\0';
+
+	delete[] code;
+
+	return code_compresse;
+}
+
+
 const char* CArbreBinaire::codage_un_caractere(char c, char* code, int i)
 {
 	if (this->est_feuille() && this->get_nom() == c) {
@@ -189,6 +214,7 @@ const char* CArbreBinaire::codage_un_caractere(char c, char* code, int i)
 	return code;
 }
 
+
 void CArbreBinaire::encodage_binaire(string filename,string buffer)
 {
 	ofstream fichier("data/" + filename + "_comp.bin", ios::out | ios::binary);
@@ -205,15 +231,16 @@ void CArbreBinaire::encodage_binaire(string filename,string buffer)
 		else {
 			binaire8 = buffer.substr(i, taille_buffer);
 		}
-		unsigned char octet = 0;
-		cout <<endl<< binaire8<<" - ";
+	
+
 		//Utilisation des booléens pour écrire en binaire
+		unsigned char octet = 0;
+
 		for (int j = 0; j < 8; ++j) {
 			bool resultat = true;
 			if (j < binaire8.length()) {
 				resultat = (binaire8[j] & 1);
 				octet +=resultat;
-				cout << resultat;
 			}
 		}
 
@@ -246,30 +273,21 @@ void CArbreBinaire::ecrire_binaire(string filename)
 
 }
 
-const char* CArbreBinaire::codage_un_caractere(char c)
+double CArbreBinaire::nb_moyen_bits(string filename)
 {
-	char* code = new char[24];
+	double nb_moyen = 0.0;
 
-	this->codage_un_caractere(c, code, 0);
-	
-	//Mise en forme correct du tableau
-	int i = 0;
-	while (code[i] == '1' || code[i] == '0') {
-		++i;
+	ifstream is("data/" + filename + "_freq.txt");
+	string buffer;
+
+	while (getline(is, buffer)) {
+		const char* str = buffer.data();
+		float pourcentage = stof(buffer.substr(1, strlen(str)))/100;
+		int nb_bits = strlen(codage_un_caractere(buffer[0]));
+		nb_moyen += nb_bits * pourcentage;
 	}
-
-	char* code_compresse = new char[i+1];
-
-	for (int j=0; j < i; j++) {
-		code_compresse[j] = code[j];
-	}
-	code_compresse[i] = '\0';
-
-	delete[] code;
-
-	return code_compresse;
+	return nb_moyen;
 }
-
 
 
 ostream& operator<<(ostream& os, const CArbreBinaire& a)

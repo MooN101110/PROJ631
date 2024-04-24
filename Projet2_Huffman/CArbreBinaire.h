@@ -46,6 +46,8 @@ class CArbreBinaire
 		void encodage_binaire(string filename, string buffer);
 		void ecrire_binaire(string filename);
 
+		double nb_moyen_bits(string filename);
+
 		friend ostream& operator<< (ostream&, const CArbreBinaire&);
 		
 };

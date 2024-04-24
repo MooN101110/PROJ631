@@ -54,9 +54,17 @@ int main()
 	//Vérification de la compression
 	double taille_origine = taille_fichier("data/" + filename + ".txt");
 	double taille_compresse = taille_fichier("data/" + filename + "_comp.bin");
+	double taille_frequence = taille_fichier("data/" + filename + "_freq.txt");
 
-	cout << endl << "Taille du fichier d'origine : " << taille_origine << endl;
-	cout << "Taille du fichier compresse: " << taille_compresse << endl;
+	cout << endl << "Taille du fichier d'origine : " << taille_origine << " octets" << endl;
+	cout << "Taille du fichier compresse: " << taille_compresse << " octets" << endl;
 
+	//Taux de compression
+	double taux_comp = 1 - ((taille_compresse + taille_frequence) / taille_origine);
+	cout << endl << "Taux de compression : " << taux_comp * 100 << " %" << endl;
+
+	//Nombre moyen de bits par caractère
+	double nb_moyen_bits = arbre.nb_moyen_bits(filename);
+	cout << "Nombre moyen de bits par caractère : " << nb_moyen_bits << " bits" << endl;
 
 }
