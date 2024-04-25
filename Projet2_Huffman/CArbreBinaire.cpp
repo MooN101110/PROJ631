@@ -273,7 +273,7 @@ void CArbreBinaire::encodage_binaire(string filename,string buffer)
 	}
 	fichier.close();
 
-	cout << endl << "Fichier binaire cree avec succes" << endl;
+	cout << endl << "\n\x1b[38;5;104mFichier binaire cree avec succes\033[0m" << endl;
 }
 
 void CArbreBinaire::ecrire_binaire(string filename)
