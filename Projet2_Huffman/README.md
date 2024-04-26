@@ -1,5 +1,4 @@
 # PROJET 2 - Compression des données par codage de Huffman
-=======
 
 ## Présentation du projet
 
@@ -34,3 +33,9 @@ Voici une brève explication des différentes étapes de la compression et donc 
 4. Lecture du fichier et parcours de l'arbre pour trouver le code bianire correspondant au caractère
 5. Enregistrement du fichier compressé en format binaire
 6. Calcul du taux de compression et du nombre de bits moyen par caractère 
+
+## Liens utiles
+
+[Article de référence](https://compression.ru/download/articles/huff/huffman_1952_minimum-redundancy-codes.pdf)
+
+[Aide pour la création de l'arbre](https://www.geeksforgeeks.org/huffman-coding-greedy-algo-3/)
